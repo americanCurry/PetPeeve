@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "MyParseApp": {
+            "applicationId": "NKazbKlKRGU9tBWFi11GaTexVy6HqhHHoBSy8FFk", 
+            "masterKey": "7FUh7hraZtXxBcz7NDOSBymRUv1PU7zUT4yO3VOP"
+        }, 
+        "_default": {
+            "link": "MyParseApp"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.5"
+    }
+}
