@@ -7,7 +7,9 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +27,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.americancurry.petpeeve.R;
+import com.yahoo.americancurry.petpeeve.utils.GoogleMapsUtil;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MapPinActivity extends ActionBarActivity implements
@@ -37,6 +46,7 @@ public class MapPinActivity extends ActionBarActivity implements
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private LatLng locationForAddress;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
 
@@ -122,7 +132,7 @@ public class MapPinActivity extends ActionBarActivity implements
         switch (requestCode) {
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-			/*
+            /*
 			 * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
@@ -263,7 +273,7 @@ public class MapPinActivity extends ActionBarActivity implements
         }
     }
 
-    public void searchLocation(MenuItem item){
+    public void searchLocation(MenuItem item) {
         Toast.makeText(this, "Searching the location", Toast.LENGTH_LONG).show();
     }
 
@@ -271,6 +281,60 @@ public class MapPinActivity extends ActionBarActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_map_pin, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+
+                Toast.makeText(MapPinActivity.this, "Searching for " + query, Toast.LENGTH_SHORT).show();
+
+                GoogleMapsUtil.getLocationForAddress(query, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                        try {
+                            JSONArray results = response.getJSONArray("results");
+
+                            if (results.length() >= 1) {
+
+                                //Navigate to the first result for simplicity
+                                JSONObject firstResult = results.getJSONObject(0).getJSONObject("geometry");
+
+                                if (firstResult != null) {
+                                    JSONObject firstLocation = firstResult.getJSONObject("location");
+                                    if (firstLocation != null) {
+
+                                        locationForAddress = new LatLng(firstLocation.getDouble("lat"), firstLocation.getDouble("lng"));
+                                        map.moveCamera(CameraUpdateFactory.newLatLng(locationForAddress));
+                                    }
+                                }
+
+                            }
+
+                        } catch (JSONException e) {
+                            Toast.makeText(MapPinActivity.this, "Unable to search for location " + query, Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                    }
+                });
+
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
