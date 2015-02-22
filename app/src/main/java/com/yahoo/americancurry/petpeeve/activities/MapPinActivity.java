@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -26,7 +27,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.utils.GoogleMapsUtil;
@@ -133,7 +136,7 @@ public class MapPinActivity extends ActionBarActivity implements
 
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
             /*
-			 * If the result code is Activity.RESULT_OK, try to connect again
+             * If the result code is Activity.RESULT_OK, try to connect again
 			 */
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -308,6 +311,11 @@ public class MapPinActivity extends ActionBarActivity implements
 
                                         locationForAddress = new LatLng(firstLocation.getDouble("lat"), firstLocation.getDouble("lng"));
                                         map.moveCamera(CameraUpdateFactory.newLatLng(locationForAddress));
+                                        map.addMarker(new MarkerOptions()
+                                                .position(locationForAddress).title(query));
+                                        map.addCircle(new CircleOptions()
+                                                .center(locationForAddress)
+                                                .radius(100).strokeColor(Color.TRANSPARENT).fillColor(0x4FA1B7EC));
                                     }
                                 }
 
