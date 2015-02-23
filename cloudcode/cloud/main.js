@@ -4,3 +4,23 @@
 Parse.Cloud.define("hello", function(request, response) {
   response.success("Hello world!");
 });
+Parse.Cloud.afterSave ("Pin",function (request) { // name of my parse class is "UserVideoMessage"
+
+    Parse.Push.send ({
+        //Selecting the already existing Push Channel
+        channels: ["PinApplication"], //This has to be the name of your push channel!!
+        data: {
+            //Selecting the Key inside the Class, this will be the content of the push notification
+            action: "com.yahoo.americancurry.petpeeve.custom" 
+        }
+    }, {
+        success: function () {
+            //Push was sent successfully
+            //nothing was loged
+        },
+        error: function (error) {
+            throw "Got and error" + error.code + " : " + error.message;
+        }
+    });
+
+});

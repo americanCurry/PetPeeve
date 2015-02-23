@@ -5,8 +5,10 @@ import android.util.Log;
 
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SaveCallback;
+import com.yahoo.americancurry.petpeeve.model.Pin;
 
 /**
  * Created by nandaja on 2/20/15.
@@ -24,8 +26,9 @@ public class PinCardsApplication extends Application {
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, YOUR_APPLICATION_ID, YOUR_CLIENT_KEY);
 
+        ParseObject.registerSubclass(Pin.class);
         //Subscribe to PARSE push service
-        ParsePush.subscribeInBackground("", new SaveCallback() {
+        ParsePush.subscribeInBackground("PinApplication", new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
@@ -35,7 +38,7 @@ public class PinCardsApplication extends Application {
                 }
             }
         });
-
+        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
     }
 
 }
