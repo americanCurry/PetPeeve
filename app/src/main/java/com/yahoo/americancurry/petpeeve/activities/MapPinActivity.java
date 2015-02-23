@@ -15,7 +15,9 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.BounceInterpolator;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,7 +49,7 @@ import org.json.JSONObject;
 public class MapPinActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
+        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, SeekBar.OnSeekBarChangeListener {
 
     public static final int DEFAULT_RADIUS = 75;
     public static final int RADIUS_COLOR = 0x6FA1B7EC;
@@ -68,6 +70,9 @@ public class MapPinActivity extends ActionBarActivity implements
 
     private Circle mapCircle;
 
+    private int currentRadius = DEFAULT_RADIUS;
+    private SeekBar seekBarRadius;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +91,9 @@ public class MapPinActivity extends ActionBarActivity implements
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+
+        seekBarRadius = (SeekBar) findViewById(R.id.seekBarRadius);
+        seekBarRadius.setOnSeekBarChangeListener(this);
 
     }
 
@@ -264,6 +272,24 @@ public class MapPinActivity extends ActionBarActivity implements
         }
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        mapCircle.setRadius(progress);
+        currentRadius = progress;
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
 
@@ -371,7 +397,9 @@ public class MapPinActivity extends ActionBarActivity implements
         removeMapCircle();
         mapCircle = map.addCircle(new CircleOptions()
                 .center(point)
-                .radius(75).strokeColor(Color.TRANSPARENT).fillColor(0x6FA1B7EC));
+                .radius(DEFAULT_RADIUS).strokeColor(Color.TRANSPARENT).fillColor(RADIUS_COLOR));
+        seekBarRadius.setVisibility(View.VISIBLE);
+
 
     }
 

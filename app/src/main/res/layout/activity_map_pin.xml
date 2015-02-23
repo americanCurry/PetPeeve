@@ -12,4 +12,20 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"/>
 
+    <SeekBar
+        android:id="@+id/seekBarRadius"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/map"
+        android:layout_marginTop="20dp"
+        android:background="#80FFFFFF"
+        android:thumbTint="@android:color/black"
+        android:progressTint="@android:color/black"
+        android:progress="75"
+        android:max="250"
+        android:visibility="invisible"
+        android:contentDescription="Location Radius"/>
+
 </RelativeLayout>
