@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -14,6 +15,7 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.BounceInterpolator;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,8 +29,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.americancurry.petpeeve.R;
@@ -43,13 +47,16 @@ import org.json.JSONObject;
 public class MapPinActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
 
+    public static final int DEFAULT_RADIUS = 75;
+    public static final int RADIUS_COLOR = 0x6FA1B7EC;
+    public static final int DEFAULT_ZOOM = 17;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private LatLng locationForAddress;
+    private LatLng latLngForAddress;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
 
@@ -58,6 +65,8 @@ public class MapPinActivity extends ActionBarActivity implements
      * returned in Activity.onActivityResult
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    private Circle mapCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +79,8 @@ public class MapPinActivity extends ActionBarActivity implements
                 @Override
                 public void onMapReady(GoogleMap map) {
                     loadMap(map);
+                    map.setOnMapLongClickListener(MapPinActivity.this);
+                    map.setOnMarkerDragListener(MapPinActivity.this);
                 }
             });
         } else {
@@ -82,9 +93,10 @@ public class MapPinActivity extends ActionBarActivity implements
         map = googleMap;
         if (map != null) {
             // Map is ready
-            Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
+            Log.d("DEBUG", "Map Fragment was loaded properly!");
             map.setMyLocationEnabled(true);
-            map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            map.getUiSettings().setMapToolbarEnabled(false);
 
             // Now that map has loaded, let's get our location!
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -182,9 +194,9 @@ public class MapPinActivity extends ActionBarActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
+            Log.d("DEBUG", "GPS location was found!");
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
             map.animateCamera(cameraUpdate);
             startLocationUpdates();
         } else {
@@ -206,7 +218,7 @@ public class MapPinActivity extends ActionBarActivity implements
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        Log.d("DEBUG", msg);
 
     }
 
@@ -228,7 +240,7 @@ public class MapPinActivity extends ActionBarActivity implements
      */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-		/*
+        /*
 		 * Google Play services can resolve some errors it detects. If the error
 		 * has a resolution, try sending an Intent to start a Google Play
 		 * services activity that can resolve error.
@@ -291,7 +303,9 @@ public class MapPinActivity extends ActionBarActivity implements
             @Override
             public boolean onQueryTextSubmit(final String query) {
 
-                Toast.makeText(MapPinActivity.this, "Searching for " + query, Toast.LENGTH_SHORT).show();
+                map.clear();
+
+                Log.d("DEBUG", "Searching for " + query);
 
                 GoogleMapsUtil.getLocationForAddress(query, new JsonHttpResponseHandler() {
                     @Override
@@ -309,13 +323,11 @@ public class MapPinActivity extends ActionBarActivity implements
                                     JSONObject firstLocation = firstResult.getJSONObject("location");
                                     if (firstLocation != null) {
 
-                                        locationForAddress = new LatLng(firstLocation.getDouble("lat"), firstLocation.getDouble("lng"));
-                                        map.moveCamera(CameraUpdateFactory.newLatLng(locationForAddress));
-                                        map.addMarker(new MarkerOptions()
-                                                .position(locationForAddress).title(query));
-                                        map.addCircle(new CircleOptions()
-                                                .center(locationForAddress)
-                                                .radius(100).strokeColor(Color.TRANSPARENT).fillColor(0x4FA1B7EC));
+                                        latLngForAddress = new LatLng(firstLocation.getDouble("lat"), firstLocation.getDouble("lng"));
+                                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngForAddress, DEFAULT_ZOOM));
+                                        Marker marker = map.addMarker(new MarkerOptions()
+                                                .position(latLngForAddress).title(query));
+                                        marker.showInfoWindow();
                                     }
                                 }
 
@@ -345,5 +357,85 @@ public class MapPinActivity extends ActionBarActivity implements
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onMapLongClick(final LatLng point) {
+
+        //clear all markers on the map
+        map.clear();
+
+        Marker marker = map.addMarker(new MarkerOptions()
+                .position(point).draggable(true));
+        dropPinEffect(marker);
+        removeMapCircle();
+        mapCircle = map.addCircle(new CircleOptions()
+                .center(point)
+                .radius(75).strokeColor(Color.TRANSPARENT).fillColor(0x6FA1B7EC));
+
+    }
+
+    private void removeMapCircle() {
+        if (mapCircle != null) {
+            mapCircle.remove();
+        }
+    }
+
+    private void dropPinEffect(final Marker marker) {
+
+        // Handler allows us to repeat a code block after a specified delay
+        final android.os.Handler handler = new android.os.Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1000;
+
+        // Use the bounce interpolator
+        final android.view.animation.Interpolator interpolator =
+                new BounceInterpolator();
+
+        // Animate marker with a bounce updating its position every 15ms
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                // Calculate t for bounce based on elapsed time
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                // Set the anchor
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post this event again 15ms from now.
+                    handler.postDelayed(this, 15);
+                } else { // done elapsing, show window
+                    marker.showInfoWindow();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+        removeMapCircle();
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+        //do nothing
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+
+        removeMapCircle();
+        mapCircle = map.addCircle(new CircleOptions()
+                .center(marker.getPosition())
+                .radius(DEFAULT_RADIUS).strokeColor(Color.TRANSPARENT).fillColor(RADIUS_COLOR));
+
+
     }
 }
