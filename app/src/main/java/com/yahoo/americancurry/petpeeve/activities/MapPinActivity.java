@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.americancurry.petpeeve.R;
+import com.yahoo.americancurry.petpeeve.fragments.ComposeFragment;
+import com.yahoo.americancurry.petpeeve.model.Pin;
 import com.yahoo.americancurry.petpeeve.utils.GoogleMapsUtil;
 
 import org.apache.http.Header;
@@ -49,7 +51,7 @@ import org.json.JSONObject;
 public class MapPinActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, SeekBar.OnSeekBarChangeListener {
+        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, SeekBar.OnSeekBarChangeListener,GoogleMap.OnMarkerClickListener {
 
     public static final int DEFAULT_RADIUS = 75;
     public static final int RADIUS_COLOR = 0x6FA1B7EC;
@@ -60,7 +62,7 @@ public class MapPinActivity extends ActionBarActivity implements
     private LocationRequest mLocationRequest;
     private LatLng latLngForAddress;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+    private long FASTEST_INTERVAL = 60000; /* 5 secs */
 
     /*
      * Define a request code to send to Google Play services This code is
@@ -72,6 +74,7 @@ public class MapPinActivity extends ActionBarActivity implements
 
     private int currentRadius = DEFAULT_RADIUS;
     private SeekBar seekBarRadius;
+    private Marker currentMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,7 @@ public class MapPinActivity extends ActionBarActivity implements
                     loadMap(map);
                     map.setOnMapLongClickListener(MapPinActivity.this);
                     map.setOnMarkerDragListener(MapPinActivity.this);
+                    map.setOnMarkerClickListener(MapPinActivity.this);
                 }
             });
         } else {
@@ -290,6 +294,24 @@ public class MapPinActivity extends ActionBarActivity implements
 
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if(currentMarker != null) {
+
+            Pin pin = new Pin();
+            pin.setLocationCentre(currentMarker.getPosition());
+            pin.setLocationRadius(currentRadius);
+            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            ComposeFragment composeFragment = ComposeFragment.newInstance("Compose Message");
+            Bundle dataBundle = new Bundle();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("pinInfo", pin);
+            composeFragment.setArguments(bundle);
+            composeFragment.show(fm, "fragment_compose");
+        }
+        return true;
+    }
+
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
 
@@ -410,6 +432,8 @@ public class MapPinActivity extends ActionBarActivity implements
     }
 
     private void dropPinEffect(final Marker marker) {
+
+        currentMarker = marker;
 
         // Handler allows us to repeat a code block after a specified delay
         final android.os.Handler handler = new android.os.Handler();
