@@ -1,6 +1,5 @@
 package com.yahoo.americancurry.petpeeve.model;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
@@ -29,8 +28,20 @@ public class Pin extends ParseObject implements Serializable {
         put("recipientPhone", recipientPhone);
     }
 
-    public void setLocationCentre(LatLng locationCentre) {
-        put("locationCentre", locationCentre);
+    public void setLocationCentreLatitude(double locationCentreLatitude) {
+        put("locationCentreLatitude", locationCentreLatitude);
+    }
+
+    public Double getLocationCentreLatitude() {
+        return getDouble("locationCentreLatitude");
+    }
+
+    public void setLocationCentreLongitude(double locationCentreLongitude) {
+        put("locationCentreLongitude", locationCentreLongitude);
+    }
+
+    public Double getLocationCentreLongitude() {
+        return getDouble("locationCentreLongitude");
     }
 
     public int getLocationRadius() {

@@ -300,7 +300,8 @@ public class MapPinActivity extends ActionBarActivity implements
         if (currentMarker != null) {
 
             Pin pin = new Pin();
-            //   pin.setLocationCentre(currentMarker.getPosition());
+            pin.setLocationCentreLatitude(currentMarker.getPosition().latitude);
+            pin.setLocationCentreLongitude(currentMarker.getPosition().longitude);
             pin.setLocationRadius(currentRadius);
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             ComposeFragment composeFragment = ComposeFragment.newInstance("Compose Message");
