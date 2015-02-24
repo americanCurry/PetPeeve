@@ -155,6 +155,7 @@ public class MapPinActivity extends ActionBarActivity implements
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
         // Decide what to do based on the original request code
         switch (requestCode) {
 

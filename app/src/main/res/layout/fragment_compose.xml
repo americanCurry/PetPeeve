@@ -1,11 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="400dp"
-    android:layout_height="400dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="#fff"
     tools:context="com.yahoo.americancurry.fragments.ComposeFragment">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,19 +40,86 @@
             style="android:attr/buttonStyleSmall"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        android:id="@+id/linearLayout1"
+        android:layout_below="@id/linearLayout"
+        android:layout_marginRight="100dp"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:id = "@+id/tvSendTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:background="@drawable/custom_button"
+            android:textColor="#ff000000"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibAddContact"
+        android:layout_below="@+id/linearLayout"
+        android:src="@drawable/send_to"
+        android:background="#ffffffff"
+        android:paddingRight="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <EditText
         android:id="@+id/etCompose"
         style="@style/Base.TextAppearance.AppCompat.Medium.Inverse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/linearLayout1"
         android:background="#0000"
         android:hint="Your message"
         android:paddingLeft="20dp"
         android:textColor="#000"
         android:textColorHint="#ffadadad"
         android:textSize="12sp"
-        android:paddingBottom="50dp"/>
+        android:paddingBottom="30dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxHeight="150dp"
+        android:layout_below="@id/etCompose"
+        android:id="@+id/ivMedia"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:layout_alignStart="@+id/linearLayout1"
+        android:layout_alignRight="@+id/linearLayout1"
+        android:layout_alignEnd="@+id/linearLayout1"
+        android:scaleType="fitCenter"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibGallery"
+        android:layout_below="@+id/ivMedia"
+        android:src="@drawable/gallery"
+        android:background="#ffffffff"
+        android:paddingLeft="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ibCamera"
+        android:layout_below="@+id/ivMedia"
+        android:src="@drawable/camera"
+        android:background="#ffffffff"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="200dp"/>
 
 
 </RelativeLayout>
