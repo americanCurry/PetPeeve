@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +29,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +50,11 @@ public class ComposeFragment extends DialogFragment {
 
     private EditText etCompose;
     private Pin pin;
-    private TextView tvSendTo;
     private ImageButton ibGallery;
     private ImageView ivMedia;
     private ImageButton ibCamera;
     private Uri uri;
+    private LinearLayout llSendTo;
 
     public ComposeFragment() {
 
@@ -115,7 +121,7 @@ public class ComposeFragment extends DialogFragment {
         etCompose.addTextChangedListener(mTextEditorWatcher);
 
 
-        tvSendTo = (TextView) view.findViewById(R.id.tvSendTo);
+      //  tvSendTo = (TextView) view.findViewById(R.id.tvSendTo);
         //llReceivers = (LinearLayout) view.findViewById(R.id.llRecivers);
 
         ImageButton ibAddContact = (ImageButton) view.findViewById(R.id.ibAddContact);
@@ -151,6 +157,8 @@ public class ComposeFragment extends DialogFragment {
             }
         });
 
+        llSendTo = (LinearLayout) view.findViewById(R.id.llSendTo);
+
         return view;
     }
 
@@ -175,7 +183,19 @@ public class ComposeFragment extends DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
 
                     Pair<String, String> pair = getContactInfo(data);
-                    tvSendTo.setText("  " + pair.first + " X  ");
+
+                    TextView textView = new TextView(getActivity());
+                    textView.setText(pair.first + " X ");
+                    textView.setBackground(getResources().getDrawable(R.drawable.custom_button));
+                    textView.setTextColor(Color.BLACK);
+                    textView.setPadding(10, 10, 10, 10);
+                    textView.setTextSize(12);
+
+                    LinearLayout.LayoutParams lastTxtParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    lastTxtParams.setMargins(0,0,10,0);
+                    textView.setLayoutParams(lastTxtParams);
+
+                    llSendTo.addView(textView);
                 }
                 break;
             case PICK_IMAGE:
