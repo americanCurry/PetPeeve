@@ -34,12 +34,17 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.Pin;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ComposeFragment extends DialogFragment {
     public static final int MAX_MESSAGE_LENGTH = 500;
@@ -55,6 +60,8 @@ public class ComposeFragment extends DialogFragment {
     private ImageButton ibCamera;
     private Uri uri;
     private LinearLayout llSendTo;
+    private Map<String,String> recepientList;
+    private Bitmap bitmapMedia;
 
     public ComposeFragment() {
 
@@ -91,6 +98,8 @@ public class ComposeFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_compose, container);
         getDialog().setCanceledOnTouchOutside(true);
+
+        recepientList = new HashMap<>();
 
         pin = (Pin) this.getArguments().get("pinInfo");
 
@@ -130,6 +139,7 @@ public class ComposeFragment extends DialogFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
                 //getActivity().startActivityForResult(intent, PICK_CONTACT);
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
                 startActivityForResult(intent, PICK_CONTACT);
             }
         });
@@ -165,6 +175,16 @@ public class ComposeFragment extends DialogFragment {
     public void composeMessage(View view) {
 
         pin.setText(etCompose.getText().toString());
+        /*
+        if(!recepientList.isEmpty()) {
+            pin.setRecipientPhone(recepientList.entrySet().iterator().next().getValue());
+        }
+
+        if(bitmapMedia!=null) {
+            ParseFile parseFile = putBitmapToParseFile(bitmapMedia);
+            pin.setParseFile(parseFile);
+        }
+*/
         try {
             pin.save();
         } catch (com.parse.ParseException e) {
@@ -175,6 +195,21 @@ public class ComposeFragment extends DialogFragment {
 
     }
 
+    ParseFile putBitmapToParseFile(Bitmap bitmap) {
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        ParseFile parseFile = new ParseFile(byteArray);
+        try {
+            parseFile.save();
+        } catch (ParseException e) {
+            // ignore parse file save, deliver message without media
+            e.printStackTrace();
+        }
+        return parseFile;
+    }
+
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
 
@@ -183,19 +218,22 @@ public class ComposeFragment extends DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
 
                     Pair<String, String> pair = getContactInfo(data);
+                    if(pair!=null) {
+                        recepientList.put(pair.first, pair.second);
 
-                    TextView textView = new TextView(getActivity());
-                    textView.setText(pair.first + " X ");
-                    textView.setBackground(getResources().getDrawable(R.drawable.custom_button));
-                    textView.setTextColor(Color.BLACK);
-                    textView.setPadding(10, 10, 10, 10);
-                    textView.setTextSize(12);
+                        TextView textView = new TextView(getActivity());
+                        textView.setText(pair.first + " X ");
+                        textView.setBackground(getResources().getDrawable(R.drawable.custom_button));
+                        textView.setTextColor(Color.BLACK);
+                        textView.setPadding(10, 10, 10, 10);
+                        textView.setTextSize(12);
 
-                    LinearLayout.LayoutParams lastTxtParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    lastTxtParams.setMargins(0,0,10,0);
-                    textView.setLayoutParams(lastTxtParams);
+                        LinearLayout.LayoutParams lastTxtParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        lastTxtParams.setMargins(0, 0, 10, 0);
+                        textView.setLayoutParams(lastTxtParams);
 
-                    llSendTo.addView(textView);
+                        llSendTo.addView(textView);
+                    }
                 }
                 break;
             case PICK_IMAGE:
@@ -214,29 +252,23 @@ public class ComposeFragment extends DialogFragment {
     }
 
     protected Pair<String, String> getContactInfo(Intent intent) {
+
         String name = "";
         String phone = "";
-        Cursor cursor = getActivity().getBaseContext().getContentResolver().query(intent.getData(), null, null, null, null);
+        // Get the URI and query the content provider for the phone number
+        Uri contactUri = intent.getData();
+        String[] projection = new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+        Cursor cursor = getActivity().getBaseContext().getContentResolver().query(contactUri, projection,
+                null, null, null);
+        // If the cursor returned is valid, get the phone number
+        if (cursor != null && cursor.moveToFirst()) {
+            int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            int nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
 
-        if (cursor.moveToNext()) {
-            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-            name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            phone = cursor.getString(numberIndex);
+            name = cursor.getString(nameIndex);
+        }
 
-            String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-            if (hasPhone.equalsIgnoreCase("1"))
-                hasPhone = "true";
-            else
-                hasPhone = "false";
-
-            if (Boolean.parseBoolean(hasPhone)) {
-                Cursor phones = getActivity().getBaseContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                while (phones.moveToNext()) {
-                    phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                }
-                phones.close();
-            }
-        }  //while (cursor.moveToNext())
         cursor.close();
         if (!name.isEmpty() && !phone.isEmpty()) {
             Pair<String, String> pair = new Pair<>(name, phone);
@@ -257,9 +289,8 @@ public class ComposeFragment extends DialogFragment {
         String picturePath = cursor.getString(columnIndex);
         cursor.close();
 
-        // ivMedia.setMaxHeight(100);
-        // ivMedia.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,100));
-        ivMedia.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        bitmapMedia = BitmapFactory.decodeFile(picturePath);
+        ivMedia.setImageBitmap(bitmapMedia);
     }
 
     public static final int MEDIA_TYPE_IMAGE = 1;

@@ -86,7 +86,8 @@
         android:layout_alignStart="@+id/llSendTo"
         android:layout_alignRight="@+id/llSendTo"
         android:layout_alignEnd="@+id/llSendTo"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        android:adjustViewBounds= "true"/>
 
     <ImageButton
         android:layout_width="wrap_content"
