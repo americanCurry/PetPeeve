@@ -12,43 +12,36 @@ import java.io.Serializable;
 @ParseClassName("Pin")
 public class Pin extends ParseObject implements Serializable{
 
-    private String text;
-
-    private String recipientPhone;
-
-    private LatLng locationCentre;
-
-    private int locationRadius;
 
     public String getText() {
-        return text;
+        getString("text");
     }
 
     public void setText(String text) {
-        this.text = text;
+        put("text", text);
     }
 
     public String getRecipientPhone() {
-        return recipientPhone;
+        getString("recipientPhone");
     }
 
     public void setRecipientPhone(String recipientPhone) {
-        this.recipientPhone = recipientPhone;
+        put("recipientPhone", recipientPhone);
     }
 
     public LatLng getLocationCentre() {
-        return locationCentre;
+        getString("locationCentre");
     }
 
     public void setLocationCentre(LatLng locationCentre) {
-        this.locationCentre = locationCentre;
+        put("locationCentre", locationCentre);
     }
 
     public int getLocationRadius() {
-        return locationRadius;
+        getInt("locationRadius");
     }
 
     public void setLocationRadius(int locationRadius) {
-        this.locationRadius = locationRadius;
+        put("locationCentre", locationRadius);
     }
 }
