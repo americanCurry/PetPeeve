@@ -103,9 +103,7 @@ public class ComposeFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, PICK_CONTACT);
-
+                composeMessage(v);
             }
         });
 
