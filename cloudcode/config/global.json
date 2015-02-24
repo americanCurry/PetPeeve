@@ -1,11 +1,11 @@
 {
     "applications": {
-        "MyParseApp": {
-            "applicationId": "NKazbKlKRGU9tBWFi11GaTexVy6HqhHHoBSy8FFk", 
-            "masterKey": "7FUh7hraZtXxBcz7NDOSBymRUv1PU7zUT4yO3VOP"
+        "Americancurry": {
+            "applicationId": "1lQMfY46mBGGVOipdkeQIC7qBaRwdf8gqVQPC0s5", 
+            "masterKey": "leXqIDSL5y4JktzDjCse1IgSwowyvLf1vWq6tLgs"
         }, 
         "_default": {
-            "link": "MyParseApp"
+            "link": "Americancurry"
         }
     }, 
     "global": {

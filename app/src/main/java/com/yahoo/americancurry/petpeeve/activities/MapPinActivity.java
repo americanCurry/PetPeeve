@@ -51,7 +51,7 @@ import org.json.JSONObject;
 public class MapPinActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, SeekBar.OnSeekBarChangeListener,GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, SeekBar.OnSeekBarChangeListener, GoogleMap.OnMarkerClickListener {
 
     public static final int DEFAULT_RADIUS = 75;
     public static final int RADIUS_COLOR = 0x6FA1B7EC;
@@ -155,7 +155,7 @@ public class MapPinActivity extends ActionBarActivity implements
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         // Decide what to do based on the original request code
         switch (requestCode) {
 
@@ -254,7 +254,7 @@ public class MapPinActivity extends ActionBarActivity implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         /*
-		 * Google Play services can resolve some errors it detects. If the error
+         * Google Play services can resolve some errors it detects. If the error
 		 * has a resolution, try sending an Intent to start a Google Play
 		 * services activity that can resolve error.
 		 */
@@ -263,7 +263,7 @@ public class MapPinActivity extends ActionBarActivity implements
                 // Start an Activity that tries to resolve the error
                 connectionResult.startResolutionForResult(this,
                         CONNECTION_FAILURE_RESOLUTION_REQUEST);
-				/*
+                /*
 				 * Thrown if Google Play services canceled the original
 				 * PendingIntent
 				 */
@@ -297,10 +297,10 @@ public class MapPinActivity extends ActionBarActivity implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if(currentMarker != null) {
+        if (currentMarker != null) {
 
             Pin pin = new Pin();
-         //   pin.setLocationCentre(currentMarker.getPosition());
+            //   pin.setLocationCentre(currentMarker.getPosition());
             pin.setLocationRadius(currentRadius);
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             ComposeFragment composeFragment = ComposeFragment.newInstance("Compose Message");

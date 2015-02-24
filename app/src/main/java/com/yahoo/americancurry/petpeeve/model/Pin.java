@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by nandaja on 2/21/15.
  */
 @ParseClassName("Pin")
-public class Pin extends ParseObject implements Serializable{
+public class Pin extends ParseObject implements Serializable {
 
 
     public String getText() {

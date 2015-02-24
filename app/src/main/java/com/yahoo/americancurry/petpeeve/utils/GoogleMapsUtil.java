@@ -16,7 +16,7 @@ public class GoogleMapsUtil {
 
     public static void getLocationForAddress(String address, JsonHttpResponseHandler jsonHttpResponseHandler) {
 
-       asyncHttpClient.get(MessageFormat.format(SEARCH_LOCATION_API_FORMAT,address),jsonHttpResponseHandler);
+        asyncHttpClient.get(MessageFormat.format(SEARCH_LOCATION_API_FORMAT, address), jsonHttpResponseHandler);
 
     }
 }

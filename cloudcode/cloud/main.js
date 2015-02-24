@@ -8,10 +8,12 @@ Parse.Cloud.afterSave ("Pin",function (request) { // name of my parse class is "
 
     Parse.Push.send ({
         //Selecting the already existing Push Channel
-        channels: ["PinApplication"], //This has to be the name of your push channel!!
+        channels: [""], //This has to be the name of your push channel!!
         data: {
             //Selecting the Key inside the Class, this will be the content of the push notification
-            action: "com.yahoo.americancurry.petpeeve.custom" 
+            action: "com.yahoo.americancurry.petpeeve.custom", 
+            objectId: request.object.id
+
         }
     }, {
         success: function () {

@@ -1,14 +1,11 @@
 package com.yahoo.americancurry.petpeeve.fragments;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,8 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,15 +32,13 @@ import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.Pin;
 
 import java.io.File;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class ComposeFragment extends DialogFragment {
     public static final int MAX_MESSAGE_LENGTH = 500;
     private static final int PICK_CONTACT = 4;
-    private static final int PICK_IMAGE= 10;
+    private static final int PICK_IMAGE = 10;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
 
@@ -157,7 +150,7 @@ public class ComposeFragment extends DialogFragment {
                 startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
-        
+
         return view;
     }
 
@@ -181,11 +174,11 @@ public class ComposeFragment extends DialogFragment {
             case PICK_CONTACT:
                 if (resultCode == Activity.RESULT_OK) {
 
-                    Pair<String,String> pair = getContactInfo(data);
+                    Pair<String, String> pair = getContactInfo(data);
                     tvSendTo.setText("  " + pair.first + " X  ");
                 }
                 break;
-            case PICK_IMAGE :
+            case PICK_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     fillImageView(data);
                 }
@@ -200,46 +193,41 @@ public class ComposeFragment extends DialogFragment {
         }
     }
 
-    protected Pair<String,String> getContactInfo(Intent intent)
-    {
+    protected Pair<String, String> getContactInfo(Intent intent) {
         String name = "";
         String phone = "";
-        Cursor cursor =  getActivity().getBaseContext().getContentResolver().query(intent.getData(), null, null, null, null);
+        Cursor cursor = getActivity().getBaseContext().getContentResolver().query(intent.getData(), null, null, null, null);
 
-        if (cursor.moveToNext())
-        {
+        if (cursor.moveToNext()) {
             String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
 
             String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
-            if ( hasPhone.equalsIgnoreCase("1"))
+            if (hasPhone.equalsIgnoreCase("1"))
                 hasPhone = "true";
             else
-                hasPhone = "false" ;
+                hasPhone = "false";
 
-            if (Boolean.parseBoolean(hasPhone))
-            {
-                Cursor phones = getActivity().getBaseContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactId,null, null);
-                while (phones.moveToNext())
-                {
+            if (Boolean.parseBoolean(hasPhone)) {
+                Cursor phones = getActivity().getBaseContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                while (phones.moveToNext()) {
                     phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 }
                 phones.close();
             }
         }  //while (cursor.moveToNext())
         cursor.close();
-        if(!name.isEmpty() && !phone.isEmpty()) {
+        if (!name.isEmpty() && !phone.isEmpty()) {
             Pair<String, String> pair = new Pair<>(name, phone);
             return pair;
-        }
-        else
+        } else
             return null;
     }
 
     protected void fillImageView(Intent intent) {
         Uri selectedImage = intent.getData();
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
         Cursor cursor = getActivity().getBaseContext().getContentResolver().query(selectedImage,
                 filePathColumn, null, null, null);
@@ -249,21 +237,25 @@ public class ComposeFragment extends DialogFragment {
         String picturePath = cursor.getString(columnIndex);
         cursor.close();
 
-       // ivMedia.setMaxHeight(100);
-       // ivMedia.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,100));
+        // ivMedia.setMaxHeight(100);
+        // ivMedia.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,100));
         ivMedia.setImageBitmap(BitmapFactory.decodeFile(picturePath));
     }
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
-    /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
+    /**
+     * Create a file Uri for saving an image or video
+     */
+    private static Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
-    /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
+    /**
+     * Create a File for saving an image or video
+     */
+    private static File getOutputMediaFile(int type) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -273,8 +265,8 @@ public class ComposeFragment extends DialogFragment {
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 Log.d("MyCameraApp", "failed to create directory");
                 return null;
             }
@@ -283,12 +275,12 @@ public class ComposeFragment extends DialogFragment {
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
+        if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-        } else if(type == MEDIA_TYPE_VIDEO) {
+                    "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
+                    "VID_" + timeStamp + ".mp4");
         } else {
             return null;
         }

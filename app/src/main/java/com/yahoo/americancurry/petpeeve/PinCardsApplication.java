@@ -1,6 +1,5 @@
 package com.yahoo.americancurry.petpeeve;
 
-import android.app.Application;
 import android.util.Log;
 
 import com.parse.Parse;
@@ -13,10 +12,10 @@ import com.yahoo.americancurry.petpeeve.model.Pin;
 /**
  * Created by nandaja on 2/20/15.
  */
-public class PinCardsApplication extends Application {
+public class PinCardsApplication extends com.activeandroid.app.Application {
 
-    public static final String YOUR_APPLICATION_ID = "NKazbKlKRGU9tBWFi11GaTexVy6HqhHHoBSy8FFk";
-    public static final String YOUR_CLIENT_KEY = "6bhxZmyp6nTMYTpCBRAJm8hn1RwaPEaKyLc5xLi8";
+    public static final String YOUR_APPLICATION_ID = "1lQMfY46mBGGVOipdkeQIC7qBaRwdf8gqVQPC0s5";
+    public static final String YOUR_CLIENT_KEY = "lQjC9ARhg3QN963qysCGUNi6EqrSEIwQMt34cDsj";
 
     @Override
     public void onCreate() {
@@ -28,7 +27,7 @@ public class PinCardsApplication extends Application {
 
         ParseObject.registerSubclass(Pin.class);
         //Subscribe to PARSE push service
-        ParsePush.subscribeInBackground("PinApplication", new SaveCallback() {
+        ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
