@@ -14,7 +14,7 @@ public class Pin extends ParseObject implements Serializable{
 
 
     public String getText() {
-        getString("text");
+        return getString("text");
     }
 
     public void setText(String text) {
@@ -22,15 +22,11 @@ public class Pin extends ParseObject implements Serializable{
     }
 
     public String getRecipientPhone() {
-        getString("recipientPhone");
+        return getString("recipientPhone");
     }
 
     public void setRecipientPhone(String recipientPhone) {
         put("recipientPhone", recipientPhone);
-    }
-
-    public LatLng getLocationCentre() {
-        getString("locationCentre");
     }
 
     public void setLocationCentre(LatLng locationCentre) {
@@ -38,7 +34,7 @@ public class Pin extends ParseObject implements Serializable{
     }
 
     public int getLocationRadius() {
-        getInt("locationRadius");
+        return getInt("locationRadius");
     }
 
     public void setLocationRadius(int locationRadius) {
