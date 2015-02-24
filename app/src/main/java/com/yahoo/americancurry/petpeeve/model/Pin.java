@@ -38,6 +38,6 @@ public class Pin extends ParseObject implements Serializable{
     }
 
     public void setLocationRadius(int locationRadius) {
-        put("locationCentre", locationRadius);
+        put("locationRadius", locationRadius);
     }
 }
