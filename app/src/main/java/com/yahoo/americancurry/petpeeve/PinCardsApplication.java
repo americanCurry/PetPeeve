@@ -1,5 +1,9 @@
 package com.yahoo.americancurry.petpeeve;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.parse.Parse;
@@ -38,6 +42,19 @@ public class PinCardsApplication extends com.activeandroid.app.Application {
             }
         });
         Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
+        getPhoneNumber();
     }
 
+    public void  getPhoneNumber(){
+        TelephonyManager tMgr = (TelephonyManager)(getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE));
+        String mPhoneNumber = tMgr.getLine1Number();
+        SharedPreferences pref =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString("phoneNumber", mPhoneNumber);
+
+        edit.commit();
+
+
+    }
 }
