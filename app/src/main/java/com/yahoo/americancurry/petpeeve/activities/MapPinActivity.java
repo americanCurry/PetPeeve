@@ -380,9 +380,6 @@ public class MapPinActivity extends ActionBarActivity implements
         return true;
     }
 
-    public void searchLocation(MenuItem item) {
-        Toast.makeText(this, "Searching the location", Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
