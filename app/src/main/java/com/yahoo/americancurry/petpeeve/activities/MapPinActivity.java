@@ -253,6 +253,10 @@ public class MapPinActivity extends ActionBarActivity implements
         for (PinLocal pin : pinListForLocation) {
 
             createNotification(new Random().nextInt(10000), R.drawable.ic_launcher, "Pin for you", pin.getText());
+
+            //Set flag in local DB to indicate that this pin has already been notified for
+            pin.setNotified(true);
+            pin.save();
         }
 
 
@@ -285,17 +289,19 @@ public class MapPinActivity extends ActionBarActivity implements
         }
         for (PinLocal pin : pinList) {
 
-            Double pinLocalLatitude = pin.getLocationCentreLatitude();
-            Double pinLocalLongitude = pin.getLocationCentreLongitude();
-            Location pinLocation = new Location("");
-            if(pinLocalLongitude!=null)
-            pinLocation.setLongitude(pinLocalLongitude);
-            if(pinLocalLatitude !=null)
-            pinLocation.setLatitude(pinLocalLatitude);
-            float distance = pinLocation.distanceTo(location);
-            if (distance < pin.getLocationRadius()) {
+            if(!pin.isNotified()) {
+                Double pinLocalLatitude = pin.getLocationCentreLatitude();
+                Double pinLocalLongitude = pin.getLocationCentreLongitude();
+                Location pinLocation = new Location("");
+                if (pinLocalLongitude != null)
+                    pinLocation.setLongitude(pinLocalLongitude);
+                if (pinLocalLatitude != null)
+                    pinLocation.setLatitude(pinLocalLatitude);
+                float distance = pinLocation.distanceTo(location);
+                if (distance < pin.getLocationRadius()) {
 
-                validPinList.add(pin);
+                    validPinList.add(pin);
+                }
             }
         }
         return validPinList;

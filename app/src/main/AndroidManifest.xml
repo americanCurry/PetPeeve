@@ -35,6 +35,10 @@
         <activity
             android:name=".activities.MapPinActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
              android:name=".activities.DetailedPinActivity"
@@ -43,10 +47,7 @@
         <activity
             android:name=".activities.IntroductionActivity"
             android:label="Pin Cards" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".activities.PinListActivity"

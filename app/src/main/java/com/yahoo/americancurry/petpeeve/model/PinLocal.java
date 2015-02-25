@@ -35,7 +35,7 @@ public class PinLocal extends Model implements Serializable {
     @Column(name = "locationRadius")
     private int locationRadius;
 
-
+//TODO
     private Bitmap mediaBitmap;
 
     @Column(name = "locationCentreLatitude")
@@ -43,6 +43,17 @@ public class PinLocal extends Model implements Serializable {
 
     @Column(name = "locationCentreLongitude")
     private Double locationCentreLongitude;
+
+    @Column(name="notified")
+    private boolean isNotified;
+
+    public boolean isNotified() {
+        return isNotified;
+    }
+
+    public void setNotified(boolean isNotified) {
+        this.isNotified = isNotified;
+    }
 
     public Double getLocationCentreLatitude() {
         return locationCentreLatitude;

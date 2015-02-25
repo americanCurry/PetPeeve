@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.yahoo.americancurry.petpeeve.R;
-import com.yahoo.americancurry.petpeeve.model.Pin;
+import com.yahoo.americancurry.petpeeve.model.PinLocal;
 
 import butterknife.InjectView;
 
