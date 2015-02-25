@@ -1,8 +1,10 @@
 package com.yahoo.americancurry.petpeeve.model;
 
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -20,12 +22,20 @@ public class Pin extends ParseObject implements Serializable {
         put("text", text);
     }
 
+    public String getRecipientName() {
+        return getString("recipientName");
+    }
+
     public String getRecipientPhone() {
         return getString("recipientPhone");
     }
 
     public void setRecipientPhone(String recipientPhone) {
         put("recipientPhone", recipientPhone);
+    }
+
+    public void setRecipientName(String recipientName) {
+        put("recipientName", recipientName);
     }
 
     public void setLocationCentreLatitude(double locationCentreLatitude) {
@@ -50,5 +60,13 @@ public class Pin extends ParseObject implements Serializable {
 
     public void setLocationRadius(int locationRadius) {
         put("locationRadius", locationRadius);
+    }
+
+    public ParseFile getParseFile() {
+        return getParseFile("mediaFile");
+    }
+
+    public void setParseFile(ParseFile f) {
+        put("mediaFile", f);
     }
 }

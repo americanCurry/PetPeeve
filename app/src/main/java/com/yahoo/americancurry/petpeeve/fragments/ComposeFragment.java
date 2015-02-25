@@ -30,7 +30,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +60,7 @@ public class ComposeFragment extends DialogFragment {
     private Uri uri;
     private LinearLayout llSendTo;
     private Map<String,String> recepientList;
-    private Bitmap bitmapMedia;
+    private Bitmap bitmapMedia = null;
 
     public ComposeFragment() {
 
@@ -175,16 +174,18 @@ public class ComposeFragment extends DialogFragment {
     public void composeMessage(View view) {
 
         pin.setText(etCompose.getText().toString());
-        /*
+
         if(!recepientList.isEmpty()) {
             pin.setRecipientPhone(recepientList.entrySet().iterator().next().getValue());
+            pin.setRecipientPhone(recepientList.entrySet().iterator().next().getKey());
         }
 
         if(bitmapMedia!=null) {
             ParseFile parseFile = putBitmapToParseFile(bitmapMedia);
             pin.setParseFile(parseFile);
         }
-*/
+
+
         try {
             pin.save();
         } catch (com.parse.ParseException e) {
@@ -237,6 +238,7 @@ public class ComposeFragment extends DialogFragment {
                 }
                 break;
             case PICK_IMAGE:
+
                 if (resultCode == Activity.RESULT_OK) {
                     fillImageView(data);
                 }

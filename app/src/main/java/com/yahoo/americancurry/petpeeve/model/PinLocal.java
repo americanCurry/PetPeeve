@@ -1,7 +1,14 @@
 package com.yahoo.americancurry.petpeeve.model;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.Toast;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Table;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
 
 import java.io.Serializable;
 
@@ -18,7 +25,11 @@ public class PinLocal extends Model implements Serializable {
 
     private String recipientPhone;
 
+    private String recipientName;
+
     private int locationRadius;
+
+    private Bitmap mediaBitmap;
 
     public String getText() {
         return text;
@@ -52,11 +63,37 @@ public class PinLocal extends Model implements Serializable {
         this.pinId = pinId;
     }
 
-    public static PinLocal fromParsePinObject(Pin pin){
+    public Bitmap getMediaBitmap() {
+        return mediaBitmap;
+    }
 
-        PinLocal localPin = new PinLocal();
+    public void setMediaBitmap(Bitmap mediaBitmap) {
+        this.mediaBitmap = mediaBitmap;
+    }
+
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
+
+    public static PinLocal fromParsePinObject(Pin pin, final Context context){
+
+        final PinLocal localPin = new PinLocal();
         localPin.setText(pin.getText());
         localPin.setRecipientPhone(pin.getRecipientPhone());
+        localPin.setRecipientName(pin.getRecipientName());
+        if(pin.getParseFile()!=null) {
+            pin.getParseFile().getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, ParseException e) {
+                    Toast.makeText(context,"Image fetched from Parse ", Toast.LENGTH_SHORT).show();
+                    localPin.setMediaBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                }
+            });
+        }
 
         return localPin;
     }

@@ -26,7 +26,7 @@ public class CustomParsePushBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION = "custom";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         System.out.println("Push received");
         Toast.makeText(context, "Push received", Toast.LENGTH_SHORT).show();
         Bundle extras = intent.getExtras();
@@ -48,7 +48,9 @@ public class CustomParsePushBroadcastReceiver extends BroadcastReceiver {
                         // row of Object Id
                         Pin pin = (Pin) objects.get(0);
                         //if(pin.getReciepient == localPhoneNumber)
-                        PinLocal localPin = PinLocal.fromParsePinObject(pin);
+
+
+                        PinLocal localPin = PinLocal.fromParsePinObject(pin, context);
                         localPin.setPinId(objectId);
                         System.out.println("### AMERICAN CURRY #### " + localPin.getPinId());
                         localPin.save();
