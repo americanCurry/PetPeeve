@@ -185,7 +185,6 @@ public class ComposeFragment extends DialogFragment {
             pin.setParseFile(parseFile);
         }
 
-
         try {
             pin.save();
         } catch (com.parse.ParseException e) {
@@ -202,12 +201,7 @@ public class ComposeFragment extends DialogFragment {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         ParseFile parseFile = new ParseFile(byteArray);
-        try {
-            parseFile.save();
-        } catch (ParseException e) {
-            // ignore parse file save, deliver message without media
-            e.printStackTrace();
-        }
+        parseFile.saveInBackground();
         return parseFile;
     }
 
