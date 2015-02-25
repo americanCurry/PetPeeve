@@ -24,10 +24,9 @@ public class IntroductionActivity extends ActionBarActivity {
         TypeWriter typeWriter = (TypeWriter)findViewById(R.id.view);
 
         //Add a character every 150ms
-        typeWriter.setCharacterDelay(100);
-        typeWriter.animateText("Pin Cards . . .");
+        typeWriter.setCharacterDelay(150);
+        typeWriter.animateText("Pin Cards");
     }
-
     public void onAnnimationOver() {
         Intent intent = new Intent(this, PinListActivity.class);
         startActivity(intent);
