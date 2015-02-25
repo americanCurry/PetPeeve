@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +15,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
+import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,9 +32,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseFile;
 import com.yahoo.americancurry.petpeeve.R;
+import com.yahoo.americancurry.petpeeve.activities.MapPinActivity;
 import com.yahoo.americancurry.petpeeve.model.Pin;
+import com.yahoo.americancurry.petpeeve.utils.GoogleMapsUtil;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -125,20 +135,6 @@ public class ComposeFragment extends DialogFragment {
         etCompose.addTextChangedListener(mTextEditorWatcher);
 
 
-      //  tvSendTo = (TextView) view.findViewById(R.id.tvSendTo);
-        //llReceivers = (LinearLayout) view.findViewById(R.id.llRecivers);
-
-        ImageButton ibAddContact = (ImageButton) view.findViewById(R.id.ibAddContact);
-        ibAddContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                //getActivity().startActivityForResult(intent, PICK_CONTACT);
-                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-                startActivityForResult(intent, PICK_CONTACT);
-            }
-        });
-
         ibGallery = (ImageButton) view.findViewById(R.id.ibGallery);
         ibGallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +159,32 @@ public class ComposeFragment extends DialogFragment {
         });
 
         llSendTo = (LinearLayout) view.findViewById(R.id.llSendTo);
+        llSendTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                //getActivity().startActivityForResult(intent, PICK_CONTACT);
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_CONTACT);
+            }
+        });
+
+        final TextView tvAddressDesc = (TextView) view.findViewById(R.id.tvAddressDesc);
+        GoogleMapsUtil.getReverseGeocoding(pin.getLocationCentreLatitude(), pin.getLocationCentreLongitude(), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray results = response.getJSONArray("results");
+                    if (results.length() > 0) {
+                        String
+                                formattedAddress = ((JSONObject) results.get(0)).getString("formatted_address");
+                        tvAddressDesc.setText("near " + formattedAddress);
+                    }
+
+                } catch (JSONException e) {
+                }
+            }
+        });
 
         return view;
     }

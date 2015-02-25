@@ -6,6 +6,23 @@
     android:background="#fff"
     tools:context="com.yahoo.americancurry.fragments.ComposeFragment">
 
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#ff60b6ff"
+        android:id="@+id/rlMenuBar">
+
+        <ImageView
+            android:id="@+id/ivPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="1dp"
+            android:src="@drawable/map_pin" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,8 +30,7 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:id="@+id/linearLayout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/rlMenuBar">
 
         <TextView
             android:id="@+id/tvComposeNumChars"
@@ -49,18 +65,14 @@
         android:layout_below="@id/linearLayout"
         android:layout_marginRight="100dp"
         android:layout_marginLeft="20dp">
-    </LinearLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ibAddContact"
-        android:layout_below="@+id/linearLayout"
-        android:src="@drawable/send_to"
-        android:background="#ffffffff"
-        android:paddingRight="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="To : "
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etCompose"
@@ -89,6 +101,10 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds= "true"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivMedia">
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -106,9 +122,15 @@
         android:id="@+id/ibCamera"
         android:layout_below="@+id/ivMedia"
         android:src="@drawable/camera"
-        android:background="#ffffffff"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="200dp"/>
+        android:background="#ffffffff"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/tvAddressDesc"
+        android:layout_gravity="center"
+        android:layout_marginLeft="50dp"/>
 
+    </LinearLayout>
 </RelativeLayout>

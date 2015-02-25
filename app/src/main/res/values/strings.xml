@@ -6,5 +6,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_detailed_pin">DetailedPinActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_introduction">IntroductionActivity</string>
+    <string name="title_activity_pin_list">PinListActivity</string>
 
 </resources>
