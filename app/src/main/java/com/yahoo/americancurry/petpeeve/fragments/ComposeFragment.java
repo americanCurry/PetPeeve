@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.Pin;
@@ -177,7 +173,7 @@ public class ComposeFragment extends DialogFragment {
 
         if(!recepientList.isEmpty()) {
             pin.setRecipientPhone(recepientList.entrySet().iterator().next().getValue());
-            pin.setRecipientPhone(recepientList.entrySet().iterator().next().getKey());
+            pin.setRecipientName(recepientList.entrySet().iterator().next().getKey());
         }
 
         if(bitmapMedia!=null) {

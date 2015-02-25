@@ -2,13 +2,18 @@ package com.yahoo.americancurry.petpeeve.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
@@ -20,6 +25,7 @@ import android.view.animation.BounceInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,12 +46,17 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.fragments.ComposeFragment;
 import com.yahoo.americancurry.petpeeve.model.Pin;
+import com.yahoo.americancurry.petpeeve.model.PinLocal;
 import com.yahoo.americancurry.petpeeve.utils.GoogleMapsUtil;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class MapPinActivity extends ActionBarActivity implements
@@ -54,8 +65,14 @@ public class MapPinActivity extends ActionBarActivity implements
         LocationListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, SeekBar.OnSeekBarChangeListener, GoogleMap.OnMarkerClickListener {
 
     public static final int DEFAULT_RADIUS = 75;
+    private int currentRadius = DEFAULT_RADIUS;
     public static final int RADIUS_COLOR = 0x6FA1B7EC;
     public static final int DEFAULT_ZOOM = 17;
+    /*
+     * Define a request code to send to Google Play services This code is
+     * returned in Activity.onActivityResult
+     */
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
@@ -63,16 +80,7 @@ public class MapPinActivity extends ActionBarActivity implements
     private LatLng latLngForAddress;
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 60000; /* 5 secs */
-
-    /*
-     * Define a request code to send to Google Play services This code is
-     * returned in Activity.onActivityResult
-     */
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-
     private Circle mapCircle;
-
-    private int currentRadius = DEFAULT_RADIUS;
     private SeekBar seekBarRadius;
     private Marker currentMarker;
 
@@ -232,7 +240,61 @@ public class MapPinActivity extends ActionBarActivity implements
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         Log.d("DEBUG", msg);
+        //Generate a notification here if a qualifying pin is present for this user
 
+        List<PinLocal> pinListForLocation = findQualifyingPins(location);
+
+        //Originate notifications for all pins in the list
+
+        for (PinLocal pin : pinListForLocation) {
+
+            createNotification(new Random().nextInt(10000), R.drawable.ic_launcher, "Pin for you", pin.getText());
+        }
+
+
+    }
+
+    private PendingIntent createPendingIntentForNotificationAction() {
+
+        Intent intent = new Intent(this, DetailedPinActivity.class);
+
+        int requestID = (int) System.currentTimeMillis();
+        int flags = PendingIntent.FLAG_CANCEL_CURRENT;
+        PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
+        return pIntent;
+
+
+    }
+
+    private List<PinLocal> findQualifyingPins(Location location) {
+
+
+        List<PinLocal> validPinList = new ArrayList<PinLocal>(5);
+        List<PinLocal> pinList = null;
+        try{
+       pinList = new Select()
+                .from(PinLocal.class)
+                .limit(25).execute();
+     }
+        catch(SQLiteException e){
+            return validPinList;
+        }
+        for (PinLocal pin : pinList) {
+
+            Double pinLocalLatitude = pin.getLocationCentreLatitude();
+            Double pinLocalLongitude = pin.getLocationCentreLongitude();
+            Location pinLocation = new Location("");
+            if(pinLocalLongitude!=null)
+            pinLocation.setLongitude(pinLocalLongitude);
+            if(pinLocalLatitude !=null)
+            pinLocation.setLatitude(pinLocalLatitude);
+            float distance = pinLocation.distanceTo(location);
+            if (distance < pin.getLocationRadius()) {
+
+                validPinList.add(pin);
+            }
+        }
+        return validPinList;
     }
 
     /*
@@ -264,7 +326,7 @@ public class MapPinActivity extends ActionBarActivity implements
                 connectionResult.startResolutionForResult(this,
                         CONNECTION_FAILURE_RESOLUTION_REQUEST);
                 /*
-				 * Thrown if Google Play services canceled the original
+                 * Thrown if Google Play services canceled the original
 				 * PendingIntent
 				 */
             } catch (IntentSender.SendIntentException e) {
@@ -312,30 +374,6 @@ public class MapPinActivity extends ActionBarActivity implements
             composeFragment.show(fm, "fragment_compose");
         }
         return true;
-    }
-
-    // Define a DialogFragment that displays the error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-
-        // Default constructor. Sets the dialog field to null
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        // Return a Dialog to the DialogFragment.
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
     }
 
     public void searchLocation(MenuItem item) {
@@ -489,6 +527,48 @@ public class MapPinActivity extends ActionBarActivity implements
         mapCircle = map.addCircle(new CircleOptions()
                 .center(marker.getPosition())
                 .radius(DEFAULT_RADIUS).strokeColor(Color.TRANSPARENT).fillColor(RADIUS_COLOR));
+
+
+    }
+
+    //  createNotification(56, R.drawable.ic_launcher, "New Message",
+//      "There is a new message from Bob!");
+    private void createNotification(int nId, int iconRes, String title, String body) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                this).setSmallIcon(iconRes)
+                .setContentTitle(title)
+                .setContentText(body).setContentIntent(createPendingIntentForNotificationAction());
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(nId, mBuilder.build());
+
+    }
+
+    // Define a DialogFragment that displays the error dialog
+    public static class ErrorDialogFragment extends DialogFragment {
+
+        // Global field to contain the error dialog
+        private Dialog mDialog;
+
+        // Default constructor. Sets the dialog field to null
+        public ErrorDialogFragment() {
+            super();
+            mDialog = null;
+        }
+
+        // Set the dialog to display
+        public void setDialog(Dialog dialog) {
+            mDialog = dialog;
+        }
+
+        // Return a Dialog to the DialogFragment.
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return mDialog;
+        }
 
 
     }

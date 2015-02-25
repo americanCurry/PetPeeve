@@ -3,7 +3,9 @@ package com.yahoo.americancurry.petpeeve;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -40,6 +42,11 @@ public class CustomParsePushBroadcastReceiver extends BroadcastReceiver {
             /*Get object from parse using objectId  - examine recipient phone
             matches local phone number and then save to local SQLLite*/
 
+            SharedPreferences pref =
+                    PreferenceManager.getDefaultSharedPreferences(context);
+            final String selfPhoneNum = pref.getString("phoneNumber", "");
+
+            System.out.println("SELF PHONENUM " +selfPhoneNum);
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Pin");
             query.whereEqualTo("objectId",objectId);
             query.findInBackground(new FindCallback<ParseObject>() {
@@ -47,16 +54,25 @@ public class CustomParsePushBroadcastReceiver extends BroadcastReceiver {
                     if (e == null) {
                         // row of Object Id
                         Pin pin = (Pin) objects.get(0);
-                        //if(pin.getReciepient == localPhoneNumber)
+                        System.out.println("RECIPIENT NUM " +pin.getRecipientPhone());
+                        System.out.print(pin.getRecipientPhone());
+                        String comparePhoneNum = pin.getRecipientPhone().replace("-", "").replace("(", "").replace(")", "");
+
+                        if(comparePhoneNum.equals(selfPhoneNum)) {
 
 
-                        PinLocal localPin = PinLocal.fromParsePinObject(pin, context);
-                        localPin.setPinId(objectId);
-                        System.out.println("### AMERICAN CURRY #### " + localPin.getPinId());
-                        localPin.save();
+                            PinLocal localPin = PinLocal.fromParsePinObject(pin, context);
+                            localPin.setPinId(objectId);
+                            System.out.println("### AMERICAN CURRY #### " + localPin.getPinId());
+                            localPin.save();
+
+                        }
+                        else{
+                            //This push is not meant for current user  - discard
+                        }
 
                     } else {
-                        // error
+
                     }
                 }
             });
