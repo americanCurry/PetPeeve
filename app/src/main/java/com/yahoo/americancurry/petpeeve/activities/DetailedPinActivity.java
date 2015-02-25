@@ -46,14 +46,14 @@ public class DetailedPinActivity extends ActionBarActivity implements
     private Pin pin;
 
     @InjectView(R.id.tvSenderHeader)
-    private TextView tvSenderHeader;
+    public TextView tvSenderHeader;
 
     @InjectView(R.id.tvMessageText)
-    private TextView tvMessageText;
+    public TextView tvMessageText;
 
 
     @InjectView(R.id.ivMessageImage)
-    private ImageView ivMessageImage;
+    public ImageView ivMessageImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
