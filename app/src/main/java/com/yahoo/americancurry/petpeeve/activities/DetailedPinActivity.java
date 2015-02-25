@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,6 +27,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.Pin;
 
+import butterknife.InjectView;
+
 
 public class DetailedPinActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -34,11 +38,22 @@ public class DetailedPinActivity extends ActionBarActivity implements
      * returned in Activity.onActivityResult
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private static final  String SENDER_HEADER_FORMAT = "You have a message at this location";
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
 
     private Pin pin;
+
+    @InjectView(R.id.tvSenderHeader)
+    private TextView tvSenderHeader;
+
+    @InjectView(R.id.tvMessageText)
+    private TextView tvMessageText;
+
+
+    @InjectView(R.id.ivMessageImage)
+    private ImageView ivMessageImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +181,12 @@ public class DetailedPinActivity extends ActionBarActivity implements
     @Override
     public void onConnected(Bundle dataBundle) {
         if (pin != null) {
+
+            //TODO get sender's name
+            tvSenderHeader.setText(SENDER_HEADER_FORMAT);
+            tvMessageText.setText(pin.getText());
+
+
             LatLng pinLatLng = new LatLng(pin.getLocationCentreLatitude(), pin.getLocationCentreLongitude());
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(pinLatLng, MapPinActivity.DEFAULT_ZOOM));
             map.addMarker(new MarkerOptions()
@@ -173,6 +194,8 @@ public class DetailedPinActivity extends ActionBarActivity implements
             map.addCircle(new CircleOptions()
                     .center(pinLatLng)
                     .radius(MapPinActivity.DEFAULT_RADIUS).strokeColor(Color.TRANSPARENT).fillColor(MapPinActivity.RADIUS_COLOR));
+
+            //TODO set image
         }
     }
 
