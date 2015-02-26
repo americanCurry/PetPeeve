@@ -9,7 +9,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:background="#ff60b6ff"
+        android:background="#F07241"
         android:id="@+id/rlMenuBar">
 
         <ImageView

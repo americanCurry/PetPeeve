@@ -577,7 +577,7 @@ public class MapPinActivity extends ActionBarActivity implements
     private void setUpActionBar() {
 
         ActionBar mActionBar = getSupportActionBar();
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ff60b6ff")));
+        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F07241")));
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
         LayoutInflater mInflater = LayoutInflater.from(this);
