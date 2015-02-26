@@ -1,23 +1,19 @@
 package com.yahoo.americancurry.petpeeve.model;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
-import com.yahoo.americancurry.petpeeve.utils.SavePhotoTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.UUID;
+
 
 /**
  * Created by nandaja on 2/24/15.

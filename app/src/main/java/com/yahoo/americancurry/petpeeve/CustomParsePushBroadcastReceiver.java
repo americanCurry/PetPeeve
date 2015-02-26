@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -30,7 +29,6 @@ public class CustomParsePushBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         System.out.println("Push received");
-        Toast.makeText(context, "Push received", Toast.LENGTH_SHORT).show();
         Bundle extras = intent.getExtras();
         String jsonData = extras.getString("com.parse.Data");
         System.out.println(jsonData);

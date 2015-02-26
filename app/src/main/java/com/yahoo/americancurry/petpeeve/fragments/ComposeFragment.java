@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,9 +14,6 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
-import android.support.v7.app.ActionBar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,7 +31,6 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseFile;
 import com.yahoo.americancurry.petpeeve.R;
-import com.yahoo.americancurry.petpeeve.activities.MapPinActivity;
 import com.yahoo.americancurry.petpeeve.model.Pin;
 import com.yahoo.americancurry.petpeeve.utils.GoogleMapsUtil;
 
@@ -108,7 +103,6 @@ public class ComposeFragment extends DialogFragment {
 
         pin = (Pin) this.getArguments().get("pinInfo");
 
-        final TextView tvComposeNumChars = (TextView) view.findViewById(R.id.tvComposeNumChars);
         etCompose = (EditText) view.findViewById(R.id.etCompose);
         Button btnTweet = (Button) view.findViewById(R.id.btSubmit);
 
@@ -119,20 +113,6 @@ public class ComposeFragment extends DialogFragment {
                 composeMessage(v);
             }
         });
-
-        TextWatcher mTextEditorWatcher = new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                tvComposeNumChars.setText(Integer.toString(MAX_MESSAGE_LENGTH));
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tvComposeNumChars.setText(String.valueOf(MAX_MESSAGE_LENGTH - s.length()));
-            }
-
-            public void afterTextChanged(Editable s) {
-            }
-        };
-        etCompose.addTextChangedListener(mTextEditorWatcher);
 
 
         ibGallery = (ImageButton) view.findViewById(R.id.ibGallery);
@@ -178,7 +158,7 @@ public class ComposeFragment extends DialogFragment {
                     if (results.length() > 0) {
                         String
                                 formattedAddress = ((JSONObject) results.get(0)).getString("formatted_address");
-                        tvAddressDesc.setText("near " + formattedAddress);
+                        tvAddressDesc.setText("Near " + formattedAddress);
                     }
 
                 } catch (JSONException e) {

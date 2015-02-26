@@ -284,9 +284,11 @@ public class DetailedPinActivity extends ActionBarActivity implements
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F07241")));
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
-        mActionBar.setTitle("Your Pin");
+   //     mActionBar.setTitle("Your Pin");
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_menu_bar, null);
+        TextView title = (TextView) mCustomView.findViewById(R.id.tvTitle);
+        title.setText("Your Pin");
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
     }

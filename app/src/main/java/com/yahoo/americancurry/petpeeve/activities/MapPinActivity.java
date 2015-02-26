@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
@@ -257,7 +258,7 @@ public class MapPinActivity extends ActionBarActivity implements
 
         for (PinLocal pin : pinListForLocation) {
 
-            createNotification(new Random().nextInt(10000), R.drawable.ic_launcher, "Pin for you", pin.getText(), pin);
+            createNotification(new Random().nextInt(10000), R.drawable.pinicon, "Pin for you", pin.getText(), pin);
 
             //Set flag in local DB to indicate that this pin has already been notified for
             pin.setNotified(true);
@@ -596,8 +597,11 @@ public class MapPinActivity extends ActionBarActivity implements
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#F07241")));
         mActionBar.setDisplayShowHomeEnabled(false);
         mActionBar.setDisplayShowTitleEnabled(false);
+
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_menu_bar, null);
+        TextView title = (TextView) mCustomView.findViewById(R.id.tvTitle);
+        title.setText("PinCards");
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
     }

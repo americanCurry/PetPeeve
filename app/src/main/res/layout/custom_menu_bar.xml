@@ -13,4 +13,16 @@
         android:layout_marginLeft="1dp"
         android:src="@drawable/map_pin" />
 
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:layout_toRightOf="@+id/ivPin"
+        android:layout_centerVertical="true"
+        android:textColor="#ffff"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:layout_marginLeft="1dp"
+        />
 </RelativeLayout>
