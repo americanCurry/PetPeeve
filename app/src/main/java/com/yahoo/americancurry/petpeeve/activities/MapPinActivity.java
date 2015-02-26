@@ -81,8 +81,8 @@ public class MapPinActivity extends ActionBarActivity implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LatLng latLngForAddress;
-    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 60000; /* 5 secs */
+    private long UPDATE_INTERVAL = 5000;  /* 60 secs */
+    private long FASTEST_INTERVAL = 5000; /* 5 secs */
     private Circle mapCircle;
     private SeekBar seekBarRadius;
     private Marker currentMarker;
@@ -423,6 +423,7 @@ public class MapPinActivity extends ActionBarActivity implements
                                         Marker marker = map.addMarker(new MarkerOptions()
                                                 .position(latLngForAddress).title(query));
                                         marker.showInfoWindow();
+                                        seekBarRadius.setVisibility(View.INVISIBLE);
                                     }
                                 }
 

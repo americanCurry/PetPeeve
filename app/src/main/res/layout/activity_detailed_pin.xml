@@ -18,20 +18,23 @@
             android:id="@+id/map"
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="200dp"
+            android:layout_margin="30dp"
             tools:layout="@layout/activity_detailed_pin" />
 
         <TextView
             android:id="@+id/tvMessageText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"/>
 
         <ImageView
             android:id="@+id/ivMessageImage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY"
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
 

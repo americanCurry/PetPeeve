@@ -44,7 +44,7 @@ public class CustomParsePushBroadcastReceiver extends BroadcastReceiver {
 
             SharedPreferences pref =
                     PreferenceManager.getDefaultSharedPreferences(context);
-            final String selfPhoneNum = pref.getString("phoneNumber", "");
+            final String selfPhoneNum = "4088135793";//pref.getString("phoneNumber", "");
 
             System.out.println("SELF PHONENUM " +selfPhoneNum);
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Pin");
