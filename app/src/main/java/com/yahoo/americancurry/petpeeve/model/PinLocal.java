@@ -3,6 +3,8 @@ package com.yahoo.americancurry.petpeeve.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.activeandroid.Model;
@@ -10,8 +12,12 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.yahoo.americancurry.petpeeve.utils.SavePhotoTask;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Created by nandaja on 2/24/15.
@@ -35,8 +41,8 @@ public class PinLocal extends Model implements Serializable {
     @Column(name = "locationRadius")
     private int locationRadius;
 
-//TODO
-    private Bitmap mediaBitmap;
+    @Column(name = "mediaURL")
+    private String mediaURL;
 
     @Column(name = "locationCentreLatitude")
     private Double locationCentreLatitude;
@@ -103,12 +109,13 @@ public class PinLocal extends Model implements Serializable {
         this.pinId = pinId;
     }
 
-    public Bitmap getMediaBitmap() {
-        return mediaBitmap;
+    public String getMediaURL() {
+        return mediaURL;
     }
 
-    public void setMediaBitmap(Bitmap mediaBitmap) {
-        this.mediaBitmap = mediaBitmap;
+    public void setMediaURL(String mediaURL) {
+        Log.i("DEBUG", "Gott media Url " + mediaURL);
+        this.mediaURL = mediaURL;
     }
 
     public String getRecipientName() {
@@ -129,16 +136,35 @@ public class PinLocal extends Model implements Serializable {
         localPin.setLocationCentreLatitude(pin.getLocationCentreLatitude());
         localPin.setLocationCentreLongitude(pin.getLocationCentreLongitude());
 
+
         if(pin.getParseFile()!=null) {
-            pin.getParseFile().getDataInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] bytes, ParseException e) {
-                    Toast.makeText(context,"Image fetched from Parse ", Toast.LENGTH_SHORT).show();
-                    localPin.setMediaBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                }
-            });
+            try {
+                byte[] bytes = pin.getParseFile().getData();
+                String imageURL = saveImage(bytes);
+                localPin.setMediaURL(imageURL);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         return localPin;
+    }
+
+    private static String saveImage(byte[] jpeg) {
+        File photo=new File(Environment.getExternalStorageDirectory() + "/Pictures", UUID.randomUUID() + "_photo.jpg");
+
+        if (photo.exists()) {
+            photo.delete();
+        }
+
+        try {
+            FileOutputStream fos=new FileOutputStream(photo.getPath());
+            fos.write(jpeg);
+            fos.close();
+        }
+        catch (java.io.IOException e) {
+            Log.e("PictureDemo", "Exception in photoCallback", e);
+        }
+        return photo.getPath();
     }
 }

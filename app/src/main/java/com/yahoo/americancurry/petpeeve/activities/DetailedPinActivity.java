@@ -28,6 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.PinLocal;
 
@@ -81,6 +82,9 @@ public class DetailedPinActivity extends ActionBarActivity implements
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
 
+        if(pin.getMediaURL()!=null) {
+            Picasso.with(getBaseContext()).load(pin.getMediaURL()).into(ivMessageImage);
+        }
     }
 
     protected void loadMap(GoogleMap googleMap) {
