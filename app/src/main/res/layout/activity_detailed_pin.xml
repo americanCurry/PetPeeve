@@ -12,7 +12,10 @@
         <TextView
             android:id="@+id/tvSenderHeader"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:textSize="15dp"/>
 
         <fragment
             android:id="@+id/map"
@@ -20,13 +23,16 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="30dp"
-            tools:layout="@layout/activity_detailed_pin" />
+            tools:layout="@layout/activity_detailed_pin"
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
             android:id="@+id/tvMessageText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:textSize="15dp"/>
 
         <ImageView
             android:id="@+id/ivMessageImage"
@@ -34,7 +40,8 @@
             android:layout_height="150dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:layout_marginTop="20dp"/>
+            android:layout_margin="10dp"
+            android:textSize="15dp"/>
 
     </LinearLayout>
 
