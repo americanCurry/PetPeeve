@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.DialogFragment;
@@ -82,7 +84,9 @@ public class MapPinActivity extends ActionBarActivity implements
     private LocationRequest mLocationRequest;
     private LatLng latLngForAddress;
     private long UPDATE_INTERVAL = 5000;  /* 60 secs */
+
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
+
     private Circle mapCircle;
     private SeekBar seekBarRadius;
     private Marker currentMarker;
@@ -252,7 +256,7 @@ public class MapPinActivity extends ActionBarActivity implements
 
         for (PinLocal pin : pinListForLocation) {
 
-            createNotification(new Random().nextInt(10000), R.drawable.ic_launcher, "Pin for you", pin.getText());
+            createNotification(new Random().nextInt(10000), R.drawable.ic_launcher, "Pin for you", pin.getText(), pin);
 
             //Set flag in local DB to indicate that this pin has already been notified for
             pin.setNotified(true);
@@ -262,10 +266,10 @@ public class MapPinActivity extends ActionBarActivity implements
 
     }
 
-    private PendingIntent createPendingIntentForNotificationAction() {
+    private PendingIntent createPendingIntentForNotificationAction(PinLocal pinLocal) {
 
         Intent intent = new Intent(this, DetailedPinActivity.class);
-
+        intent.putExtra("pin", pinLocal);
         int requestID = (int) System.currentTimeMillis();
         int flags = PendingIntent.FLAG_CANCEL_CURRENT;
         PendingIntent pIntent = PendingIntent.getActivity(this, requestID, intent, flags);
@@ -541,11 +545,13 @@ public class MapPinActivity extends ActionBarActivity implements
 
     //  createNotification(56, R.drawable.ic_launcher, "New Message",
 //      "There is a new message from Bob!");
-    private void createNotification(int nId, int iconRes, String title, String body) {
+    private void createNotification(int nId, int iconRes, String title, String body, PinLocal pin) {
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 this).setSmallIcon(iconRes)
                 .setContentTitle(title)
-                .setContentText(body).setContentIntent(createPendingIntentForNotificationAction());
+                .setContentText(body).setContentIntent(createPendingIntentForNotificationAction( pin)).setSound(soundUri);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
