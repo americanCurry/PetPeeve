@@ -28,7 +28,7 @@ public class IntroductionActivity extends ActionBarActivity {
         typeWriter.animateText("Pin Cards");
     }
     public void onAnnimationOver() {
-        Intent intent = new Intent(this, PinListActivity.class);
+        Intent intent = new Intent(this, MapPinActivity.class);
         startActivity(intent);
     }
 
