@@ -25,8 +25,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.yahoo.americancurry.petpeeve.R;
@@ -203,8 +205,9 @@ public class DetailedPinActivity extends ActionBarActivity implements
 
             LatLng pinLatLng = new LatLng(pin.getLocationCentreLatitude(), pin.getLocationCentreLongitude());
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(pinLatLng, MapPinActivity.DEFAULT_ZOOM));
-            map.addMarker(new MarkerOptions()
+            Marker marker = map.addMarker(new MarkerOptions()
                     .position(pinLatLng));
+            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_mail_pin));
             map.addCircle(new CircleOptions()
                     .center(pinLatLng)
                     .radius(MapPinActivity.DEFAULT_RADIUS).strokeColor(Color.TRANSPARENT).fillColor(MapPinActivity.RADIUS_COLOR));
