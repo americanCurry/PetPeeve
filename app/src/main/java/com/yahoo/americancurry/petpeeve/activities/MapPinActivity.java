@@ -42,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -426,6 +427,7 @@ public class MapPinActivity extends ActionBarActivity implements
                                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngForAddress, DEFAULT_ZOOM));
                                         Marker marker = map.addMarker(new MarkerOptions()
                                                 .position(latLngForAddress).title(query));
+                                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                                         marker.showInfoWindow();
                                         seekBarRadius.setVisibility(View.INVISIBLE);
                                     }
@@ -486,6 +488,7 @@ public class MapPinActivity extends ActionBarActivity implements
     private void dropPinEffect(final Marker marker) {
 
         currentMarker = marker;
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_mail_pin));
 
         // Handler allows us to repeat a code block after a specified delay
         final android.os.Handler handler = new android.os.Handler();
