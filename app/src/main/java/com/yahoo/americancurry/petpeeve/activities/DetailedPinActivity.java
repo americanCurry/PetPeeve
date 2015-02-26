@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.PinLocal;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
@@ -64,7 +65,7 @@ public class DetailedPinActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_pin);
         setUpActionBar();
-
+        ButterKnife.inject(this);
         pin = (PinLocal) getIntent().getSerializableExtra("pin");
 
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
