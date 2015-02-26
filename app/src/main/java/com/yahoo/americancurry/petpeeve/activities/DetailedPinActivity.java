@@ -47,7 +47,7 @@ public class DetailedPinActivity extends ActionBarActivity implements
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
 
-    private Pin pin;
+    private PinLocal pin;
 
     @InjectView(R.id.tvSenderHeader)
     public TextView tvSenderHeader;
@@ -65,7 +65,7 @@ public class DetailedPinActivity extends ActionBarActivity implements
         setContentView(R.layout.activity_detailed_pin);
         setUpActionBar();
 
-        pin = (Pin) getIntent().getSerializableExtra("pin");
+        pin = (PinLocal) getIntent().getSerializableExtra("pin");
 
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
