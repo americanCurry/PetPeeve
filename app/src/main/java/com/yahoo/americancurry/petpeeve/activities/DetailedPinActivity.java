@@ -85,7 +85,7 @@ public class DetailedPinActivity extends ActionBarActivity implements
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(this, "Media URL in detail activity" + pin.getMediaURL(), Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "Media URL in detail activity" + pin.getMediaURL(), Toast.LENGTH_SHORT).show();
 
         if(pin.getMediaURL()!=null) {
             File f = new File(pin.getMediaURL());
