@@ -60,7 +60,6 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginRight="20dp"
-
             android:src="@drawable/ic_close_quotation"
            />
 
@@ -69,12 +68,16 @@
 
     <ImageView
         android:id="@+id/ivMessageImage"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_below="@+id/messageLayout"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:layout_margin="10dp"
+        android:scaleType="fitCenter"
+        android:maxHeight="150dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+
         />
 
 

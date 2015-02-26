@@ -32,6 +32,8 @@ import com.squareup.picasso.Picasso;
 import com.yahoo.americancurry.petpeeve.R;
 import com.yahoo.americancurry.petpeeve.model.PinLocal;
 
+import java.io.File;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -81,9 +83,11 @@ public class DetailedPinActivity extends ActionBarActivity implements
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+        Toast.makeText(this, "Media URL in detail activity" + pin.getMediaURL(), Toast.LENGTH_SHORT).show();
 
         if(pin.getMediaURL()!=null) {
-            Picasso.with(getBaseContext()).load(pin.getMediaURL()).into(ivMessageImage);
+            File f = new File(pin.getMediaURL());
+            Picasso.with(getBaseContext()).load(f).into(ivMessageImage);
         }
     }
 
